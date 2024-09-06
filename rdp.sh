@@ -3,9 +3,20 @@
 # Update the system
 sudo apt update -y && sudo apt upgrade -y
 
+# Remove any previously downloaded incomplete files
+rm -f nomachine*.deb
+
+# Download the latest NoMachine package
+wget https://download.nomachine.com/download/7.10/Linux/nomachine_7.10.1_1_amd64.deb -O nomachine_latest.deb
+
+# Check if the download was successful
+if [ ! -f "nomachine_latest.deb" ]; then
+    echo "Failed to download NoMachine package!"
+    exit 1
+fi
+
 # Install NoMachine
-wget https://download.nomachine.com/download/7.10/Linux/nomachine_7.10.1_1_amd64.deb
-sudo dpkg -i nomachine_7.10.1_1_amd64.deb
+sudo dpkg -i nomachine_latest.deb
 
 # Check if NoMachine installed successfully
 if ! command -v /usr/NX/bin/nxserver &> /dev/null
