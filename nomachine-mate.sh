@@ -34,9 +34,6 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Proceed with the rest of your script
-echo "Ngrok downloaded and extracted successfully."
-
 # Define the goto function
 function goto {
     label=$1
@@ -45,11 +42,18 @@ function goto {
     exit
 }
 
+# Start ngrok setup
 : ngrok
 clear
 echo "Go to: https://dashboard.ngrok.com/get-started/your-authtoken"
 read -p "Paste Ngrok Authtoken: " CRP
 ./ngrok config add-authtoken $CRP 
+
+# Check if ngrok is configured correctly
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to add ngrok authtoken. Please check your token."
+    exit 1
+fi
 
 # Clear the screen and ask for ngrok region
 clear
@@ -65,12 +69,14 @@ echo "sa - South America (Sao Paulo)"
 echo "jp - Japan (Tokyo)"
 echo "in - India (Mumbai)"
 read -p "Choose ngrok region: " CRP
+
+# Start ngrok with the specified region
 ./ngrok tcp --region $CRP 4000 &>/dev/null &
 sleep 1
 
 # Check if ngrok is running
 if curl --silent --show-error http://127.0.0.1:4040/api/tunnels > /dev/null 2>&1; then 
-    echo OK
+    echo "Ngrok is running."
 else 
     echo "Ngrok Error! Please try again!" 
     sleep 1 
