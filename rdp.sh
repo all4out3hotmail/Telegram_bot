@@ -1,51 +1,63 @@
-#!/bin/bash
+wget -O ng.sh https://github.com/kmille36/Docker-Ubuntu-Desktop-NoMachine/raw/main/ngrok.sh > /dev/null 2>&1
+chmod +x ng.sh
+./ng.sh
 
-# Update the system
-sudo apt update -y && sudo apt upgrade -y
+function goto {
+    label=$1
+    cd 
+    cmd=$(sed -n "/^:[[:blank:]][[:blank:]]*${label}/{:a;n;p;ba};" $0 | 
+          grep -v ':$')
+    eval "$cmd"
+    exit
+}
 
-# Remove any previously downloaded incomplete files
-rm -f nomachine*.deb
+: ngrok
+clear
+echo "Go to: https://dashboard.ngrok.com/get-started/your-authtoken"
+read -p "Paste Ngrok Authtoken: " CRP
+./ngrok config add-authtoken $CRP 
 
-# Download the latest NoMachine package
-wget https://download.nomachine.com/download/7.10/Linux/nomachine_7.10.1_1_amd64.deb -O nomachine_latest.deb
-
-# Check if the download was successful
-if [ ! -f "nomachine_latest.deb" ]; then
-    echo "Failed to download NoMachine package!"
-    exit 1
+clear
+echo "Repo: https://github.com/kmille36/Docker-Ubuntu-Desktop-NoMachine"
+echo "======================="
+echo "choose ngrok region (for better connection)."
+echo "======================="
+echo "us - United States (Ohio)"
+echo "eu - Europe (Frankfurt)"
+echo "ap - Asia/Pacific (Singapore)"
+echo "au - Australia (Sydney)"
+echo "sa - South America (Sao Paulo)"
+echo "jp - Japan (Tokyo)"
+echo "in - India (Mumbai)"
+read -p "choose ngrok region: " CRP
+./ngrok tcp --region $CRP 4000 &>/dev/null &
+sleep 1
+if curl --silent --show-error http://127.0.0.1:2608/api/tunnels > /dev/null 2>&1; then 
+    echo OK
+else 
+    echo "Ngrok Error! Please try again!" 
+    sleep 1 
+    goto ngrok
 fi
 
-# Install NoMachine
-sudo dpkg -i nomachine_latest.deb
-
-# Check if NoMachine installed successfully
-if ! command -v /usr/NX/bin/nxserver &> /dev/null
-then
-    echo "NoMachine installation failed!"
-    exit 1
-fi
-
-# Modify NoMachine config to run on port 400
-sudo sed -i 's/Port 4000/Port 400/' /usr/NX/etc/server.cfg
-sudo /usr/NX/bin/nxserver --restart
-
-# Install MATE desktop
-sudo apt install mate-desktop-environment -y
-
-# Install ngrok
-wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-stable-linux-amd64.zip
-unzip ngrok-stable-linux-amd64.zip
-sudo mv ngrok /usr/local/bin/
-
-# Add your ngrok authtoken directly
-ngrok authtoken 2kVmQkatiPOKKYbiZDf4XxwNxTZ_2MhMzm1DyKDEJEaeFsck8
-
-# Run ngrok to expose port 400 (for NoMachine)
-echo "Starting ngrok to expose port 400..."
-nohup ngrok tcp 400 &
-
-# Output the public URL for accessing NoMachine
-sleep 5
-curl --silent http://127.0.0.1:4040/api/tunnels | grep -o 'tcp://[^"]*'
-
-echo "NoMachine is running on port 400 and is accessible worldwide via ngrok."
+docker run --rm -d --network host --privileged --name nomachine-mate -e PASSWORD=2608 -e USER=all4out --cap-add=SYS_PTRACE --shm-size=1g thuonghai2711/nomachine-ubuntu-desktop:mate
+clear
+echo "NoMachine: https://www.nomachine.com/download"
+echo Done! NoMachine Information:
+echo IP Address:
+curl --silent --show-error http://127.0.0.1:2608/api/tunnels | sed -nE 's/.*public_url":"tcp:..([^"]*).*/\1/p' 
+echo User: all4out
+echo Passwd: 2608
+echo "VM can't connect? Restart Cloud Shell then re-run the script."
+seq 1 43200 | while read i; do 
+    echo -en "\r Running .     $i s /43200 s"; sleep 0.1
+    echo -en "\r Running ..    $i s /43200 s"; sleep 0.1
+    echo -en "\r Running ...   $i s /43200 s"; sleep 0.1
+    echo -en "\r Running ....  $i s /43200 s"; sleep 0.1
+    echo -en "\r Running ..... $i s /43200 s"; sleep 0.1
+    echo -en "\r Running     . $i s /43200 s"; sleep 0.1
+    echo -en "\r Running  .... $i s /43200 s"; sleep 0.1
+    echo -en "\r Running   ... $i s /43200 s"; sleep 0.1
+    echo -en "\r Running    .. $i s /43200 s"; sleep 0.1
+    echo -en "\r Running     . $i s /43200 s"; sleep 0.1
+done
